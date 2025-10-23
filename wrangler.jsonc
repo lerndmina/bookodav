@@ -4,7 +4,7 @@
  */
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "bookodav-worker",
+  "name": "booko-dav",
   "main": "src/index.js",
   "compatibility_date": "2025-02-14",
   "observability": {
