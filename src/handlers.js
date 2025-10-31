@@ -178,19 +178,26 @@ export async function handleFileList(request, env, ctx) {
         </D:response>
         ${sortedObjects
             .map(
-                (obj) => `
+                (obj) => {
+                    // Use the appropriate date field based on SORT_BY setting
+                    const lastModified = sortBy === "modified" && obj.httpMetadata?.lastModified
+                        ? new Date(obj.httpMetadata.lastModified).toUTCString()
+                        : new Date(obj.uploaded).toUTCString();
+                    
+                    return `
               <D:response>
                 <D:href>/${encodeURIComponent(obj.key)}</D:href>
                 <D:propstat>
                   <D:prop>
                     <D:resourcetype/> <!-- Empty for files -->
                     <D:getcontentlength>${obj.size}</D:getcontentlength>
-                    <D:getlastmodified>${new Date(obj.uploaded).toUTCString()}</D:getlastmodified>
+                    <D:getlastmodified>${lastModified}</D:getlastmodified>
                   </D:prop>
                   <D:status>HTTP/1.1 200 OK</D:status>
                 </D:propstat>
               </D:response>
-            `
+            `;
+                }
             )
             .join("")}
       </D:multistatus>

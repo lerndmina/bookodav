@@ -67,6 +67,7 @@
 
         <script>
             // Fetch and display the file list
+            // Note: Files are pre-sorted by the backend based on the SORT_BY environment variable
             async function loadFileList() {
                 try {
                     const response = await fetch('/', { method: 'PROPFIND' });
