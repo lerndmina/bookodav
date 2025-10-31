@@ -149,6 +149,11 @@ export async function handleFileList(request, env, ctx) {
     const objects = await env.MY_BUCKET.list({ prefix });
     console.log(objects);
     
+    // Sort objects by uploaded date (newest first)
+    const sortedObjects = [...objects.objects].sort((a, b) => {
+        return new Date(b.uploaded) - new Date(a.uploaded);
+    });
+    
     // Generate WebDAV XML response
     const xmlResponse = `
       <D:multistatus xmlns:D="DAV:">
@@ -162,7 +167,7 @@ export async function handleFileList(request, env, ctx) {
             <D:status>HTTP/1.1 200 OK</D:status>
           </D:propstat>
         </D:response>
-        ${objects.objects
+        ${sortedObjects
             .map(
                 (obj) => `
               <D:response>
