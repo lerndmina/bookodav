@@ -104,7 +104,6 @@
                     // Display sorted files
                     fileArray.forEach(file => {
                         const row = document.createElement('tr');
-                        console.log("hrefhrefhrefhrefhrefhrefhrefhref",file.href);
                         
                         row.innerHTML = `
                             <td>${decodeURIComponent(file.href.split('/').pop())}</td>
