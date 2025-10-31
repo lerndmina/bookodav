@@ -149,9 +149,18 @@ export async function handleFileList(request, env, ctx) {
     const objects = await env.MY_BUCKET.list({ prefix });
     console.log(objects);
     
-    // Sort objects by uploaded date (newest first)
+    // Sort objects based on SORT_BY environment variable (defaults to "uploaded")
+    const sortBy = env.SORT_BY || "uploaded";
     const sortedObjects = [...objects.objects].sort((a, b) => {
-        return new Date(b.uploaded) - new Date(a.uploaded);
+        if (sortBy === "modified") {
+            // Sort by httpMetadata.lastModified if available, fallback to uploaded
+            const dateA = a.httpMetadata?.lastModified ? new Date(a.httpMetadata.lastModified) : new Date(a.uploaded);
+            const dateB = b.httpMetadata?.lastModified ? new Date(b.httpMetadata.lastModified) : new Date(b.uploaded);
+            return dateB - dateA;
+        } else {
+            // Default: sort by uploaded date (newest first)
+            return new Date(b.uploaded) - new Date(a.uploaded);
+        }
     });
     
     // Generate WebDAV XML response

@@ -41,6 +41,19 @@ WebDAV:
   Username: [your-username]
   Password: [your-password]
 ```
+
+## Configuration
+
+### Environment Variables
+
+You can configure Booko-DAV using environment variables in the Cloudflare Workers dashboard or in `wrangler.jsonc`:
+
+- **`SORT_BY`**: Controls how files are sorted in listings
+  - `"uploaded"` (default): Sort by upload date, newest first
+  - `"modified"`: Sort by file modification date, newest first (falls back to upload date if not available)
+
+To set this in Cloudflare Dashboard: Go to Workers → bookodav-worker → Settings → Variables → Environment Variables
+
 ## Cost Structure (Cloudflare)
 
 | Service         | Free Tier       | Paid Tier          |
