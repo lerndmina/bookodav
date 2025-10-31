@@ -92,6 +92,16 @@ export default {
 			return dumpCache(request, env, ctx);
 		}
 
+		if (request.method === "GET" && path === "/api/config") {
+			const sortBy = env.SORT_BY || "uploaded";
+			return new Response(JSON.stringify({ sortBy }), {
+				headers: {
+					...corsHeaders,
+					"Content-Type": "application/json",
+				},
+			});
+		}
+
 		if (request.method === "PUT") {
 			return handlePutFile(request, env, ctx)
 		}

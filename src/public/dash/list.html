@@ -69,7 +69,7 @@
             // Fetch and display the file list
             async function loadFileList() {
                 try {
-                    const response = await fetch('/', { method: 'PROPFIND' }); // Replace with your endpoint
+                    const response = await fetch('/', { method: 'PROPFIND' });
                     const data = await response.text();
 
                     // Parse the XML response
@@ -81,8 +81,7 @@
                     const fileList = document.getElementById('fileList');
                     fileList.innerHTML = ''; // Clear existing content
 
-                    // Collect files into an array for sorting
-                    const fileArray = [];
+                    // Files are already sorted by the backend based on SORT_BY environment variable
                     files.forEach(file => {
                         const href = file.querySelector('D\\:href, href').textContent;
                         const size = file.querySelector('D\\:getcontentlength, getcontentlength')?.textContent || 'N/A';
@@ -91,26 +90,15 @@
                         // Skip the root directory entry
                         if (href === '/') return;
 
-                        fileArray.push({ href, size, lastModified });
-                    });
-
-                    // Sort by uploaded date (newest first)
-                    fileArray.sort((a, b) => {
-                        const dateA = new Date(a.lastModified);
-                        const dateB = new Date(b.lastModified);
-                        return dateB - dateA;
-                    });
-
-                    // Display sorted files
-                    fileArray.forEach(file => {
+                        // Create a table row for each file
                         const row = document.createElement('tr');
                         
                         row.innerHTML = `
-                            <td>${decodeURIComponent(file.href.split('/').pop())}</td>
-                            <td>${formatBytes(file.size)}</td>
-                            <td>${new Date(file.lastModified).toLocaleString()}</td>
-                            <td><a href="${file.href}" download>Download</a></td>
-                            <td><button onclick="deleteFile('${file.href}')">Delete</button></td>
+                            <td>${decodeURIComponent(href.split('/').pop())}</td>
+                            <td>${formatBytes(size)}</td>
+                            <td>${new Date(lastModified).toLocaleString()}</td>
+                            <td><a href="${href}" download>Download</a></td>
+                            <td><button onclick="deleteFile('${href}')">Delete</button></td>
                         `;
                         fileList.appendChild(row);
                     });
